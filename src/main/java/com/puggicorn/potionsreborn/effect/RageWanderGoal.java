@@ -13,8 +13,11 @@ import net.minecraft.world.phys.Vec3;
  * moment a target or attacker appears, so attack always wins.
  */
 public class RageWanderGoal extends Goal {
-    /** How far ahead (in blocks) each leg of the search tries to reach. */
-    private static final double LEG_DISTANCE = 12.0D;
+    /** How far ahead (in blocks) each leg of the search tries to reach at first. */
+    private static final double BASE_LEG_DISTANCE = 12.0D;
+    /** Each consecutive failed leg extends the search radius by this much, up to a cap. */
+    private static final double LEG_DISTANCE_STEP = 6.0D;
+    private static final double MAX_LEG_DISTANCE = 48.0D;
     /** Min/max ticks a mob commits to one direction before turning. */
     private static final int MIN_LEG_TICKS = 60;
     private static final int MAX_LEG_TICKS = 160;
@@ -24,6 +27,8 @@ public class RageWanderGoal extends Goal {
     private double directionX;
     private double directionZ;
     private int legTicks;
+    /** Consecutive legs that found no path; drives the widening search. */
+    private int failedLegs;
 
     public RageWanderGoal(PathfinderMob mob, double speedModifier) {
         this.mob = mob;
@@ -66,6 +71,7 @@ public class RageWanderGoal extends Goal {
     @Override
     public void stop() {
         this.mob.getNavigation().stop();
+        this.failedLegs = 0;
     }
 
     /** Picks a random compass direction and starts pathfinding along it. */
@@ -76,10 +82,12 @@ public class RageWanderGoal extends Goal {
         this.legTicks = MIN_LEG_TICKS + this.mob.getRandom().nextInt(MAX_LEG_TICKS - MIN_LEG_TICKS);
 
         BlockPos base = this.mob.blockPosition();
+        // The search radius grows each time the previous leg failed to find a path.
+        double legDistance = Math.min(BASE_LEG_DISTANCE + this.failedLegs * LEG_DISTANCE_STEP, MAX_LEG_DISTANCE);
         BlockPos target = base.offset(
-            (int)(this.directionX * LEG_DISTANCE),
+            (int)(this.directionX * legDistance),
             0,
-            (int)(this.directionZ * LEG_DISTANCE));
+            (int)(this.directionZ * legDistance));
 
         // Try to path to the target; if unreachable, nudge around the search height a few times.
         Path path = this.mob.getNavigation().createPath(target, 0);
@@ -93,9 +101,11 @@ public class RageWanderGoal extends Goal {
         }
 
         if (path != null) {
+            this.failedLegs = 0;
             this.mob.getNavigation().moveTo(path, this.speedModifier);
         } else {
-            // No path found this way; give up on this leg early so a new direction is tried soon.
+            // No path found this way; widen the next search and give up on this leg early.
+            this.failedLegs++;
             this.legTicks = Math.min(this.legTicks, 10);
         }
 

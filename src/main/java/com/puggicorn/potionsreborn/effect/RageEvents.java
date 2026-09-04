@@ -2,7 +2,6 @@ package com.puggicorn.potionsreborn.effect;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -13,9 +12,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -29,9 +25,6 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
  */
 public final class RageEvents {
     private static final int STUN_DURATION = 80; // 4 seconds
-    private static final int PUNCH_INTERVAL = 60; // 3 seconds
-    private static final float PUNCH_CHANCE = 0.10F;
-    private static final double PUNCH_RANGE = 4.0D;
     /** Chance per second that an enraged ranged mob drops its weapon to melee. */
     private static final float FRENZY_CHANCE = 0.35F;
 
@@ -251,27 +244,6 @@ public final class RageEvents {
         }
     }
 
-    /** Player behavior: 10% chance every 3 seconds to punch a mob being stared at. */
-    @SubscribeEvent
-    public static void onPlayerTick(EntityTickEvent.Post event) {
-        Entity entity = event.getEntity();
-        if (!(entity instanceof Player player) || player.level().isClientSide) {
-            return;
-        }
-        if (player.isSpectator() || player.isCreative() || !player.hasEffect(ModEffects.BURNING_RAGE)) {
-            return;
-        }
-        if (player.tickCount % PUNCH_INTERVAL != 0 || player.getRandom().nextFloat() >= PUNCH_CHANCE) {
-            return;
-        }
-
-        HitResult hit = ProjectileUtil.getHitResultOnViewVector(player,
-            e -> e instanceof LivingEntity && e != player && e.isAlive(), PUNCH_RANGE);
-        if (hit.getType() == HitResult.Type.ENTITY) {
-            Entity target = ((EntityHitResult) hit).getEntity();
-            player.resetAttackStrengthTicker();
-            player.swing(InteractionHand.MAIN_HAND);
-            player.attack(target);
-        }
-    }
+    // Enraged player outbursts are handled client-side (RagePlayerClientBehavior) so the camera
+    // turn and arm swing are actually visible to the player.
 }
