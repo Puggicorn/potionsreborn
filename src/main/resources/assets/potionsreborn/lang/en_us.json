@@ -1,13 +1,21 @@
 {
-  "itemGroup.examplemod": "Example Mod Tab",
-  "block.examplemod.example_block": "Example Block",
-  "item.examplemod.example_item": "Example Item",
-
-  "examplemod.configuration.title": "Example Mod Configs",
-  "examplemod.configuration.section.examplemod.common.toml": "Example Mod Configs",
-  "examplemod.configuration.section.examplemod.common.toml.title": "Example Mod Configs",
-  "examplemod.configuration.items": "Item List",
-  "examplemod.configuration.logDirtBlock": "Log Dirt Block",
-  "examplemod.configuration.magicNumberIntroduction": "Magic Number Text",
-  "examplemod.configuration.magicNumber": "Magic Number"
+  "block.potionsreborn.centrifuge": "Centrifuge",
+  "container.potionsreborn.centrifuge": "Centrifuge",
+  "gui.potionsreborn.centrifuge.start": "Start",
+  "gui.potionsreborn.centrifuge.stop": "Stop",
+  "gui.potionsreborn.extraction": "Effect Extraction",
+  "effect.potionsreborn.climbing": "Climbing",
+  "effect.potionsreborn.burning_rage": "Burning Rage",
+  "effect.potionsreborn.stun": "Stun",
+  "item.potionsreborn.breeze_powder": "Breeze Powder",
+  "item.minecraft.potion.effect.potionsreborn.extracted": "Extracted Potion",
+  "item.minecraft.splash_potion.effect.potionsreborn.extracted": "Splash Extracted Potion",
+  "item.minecraft.lingering_potion.effect.potionsreborn.extracted": "Lingering Extracted Potion",
+  "item.minecraft.tipped_arrow.effect.potionsreborn.extracted": "Arrow of Extraction",
+  "item.minecraft.potion.effect.climbing": "Potion of Climbing",
+  "item.minecraft.splash_potion.effect.climbing": "Splash Potion of Climbing",
+  "item.minecraft.lingering_potion.effect.climbing": "Lingering Potion of Climbing",
+  "item.minecraft.potion.effect.burning_rage": "Potion of Burning Rage",
+  "item.minecraft.splash_potion.effect.burning_rage": "Splash Potion of Burning Rage",
+  "item.minecraft.lingering_potion.effect.burning_rage": "Lingering Potion of Burning Rage"
 }

@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:golden_carrot"
+  },
+  "effects": [
+      {"id": "minecraft:night_vision", "duration": 3600, "amplifier": 0},
+      {"id": "minecraft:saturation", "duration": 1, "amplifier": 0},
+      {"id": "minecraft:blindness", "duration": 300, "amplifier": 0}
+  ]
+}

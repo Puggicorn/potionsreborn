@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:ghast_tear"
+  },
+  "effects": [
+      {"id": "minecraft:regeneration", "duration": 900, "amplifier": 0},
+      {"id": "minecraft:slow_falling", "duration": 1800, "amplifier": 0},
+      {"id": "minecraft:weakness", "duration": 900, "amplifier": 0}
+  ]
+}

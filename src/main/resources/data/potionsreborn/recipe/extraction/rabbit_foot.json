@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:rabbit_foot"
+  },
+  "effects": [
+      {"id": "minecraft:jump_boost", "duration": 3600, "amplifier": 0},
+      {"id": "minecraft:luck", "duration": 6000, "amplifier": 0},
+      {"id": "minecraft:hunger", "duration": 600, "amplifier": 0}
+  ]
+}

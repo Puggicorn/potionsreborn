@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:fermented_spider_eye"
+  },
+  "effects": [
+      {"id": "minecraft:weakness", "duration": 1800, "amplifier": 0},
+      {"id": "minecraft:slowness", "duration": 1800, "amplifier": 0},
+      {"id": "minecraft:invisibility", "duration": 1200, "amplifier": 0}
+  ]
+}

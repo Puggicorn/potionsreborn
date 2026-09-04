@@ -27,7 +27,11 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    // Recipe viewer integrations
+    maven { url "https://maven.blamejared.com/" }       // JEI
+    maven { url "https://repo.sleeping.town/" }         // EMI
+    maven { url "https://maven.shedaniel.me/" }         // REI + Cloth Config
+    maven { url "https://maven.architectury.dev/" }     // Architectury (REI runtime dep)
 }
 
 base {
@@ -116,12 +120,25 @@ configurations {
 }
 
 dependencies {
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+    // Recipe viewer integrations. The API is always on the compile classpath so the compat
+    // plugins build, but the full mods are only added to the dev runtime when explicitly enabled
+    // via -PwithJei / -PwithEmi / -PwithRei (off by default so they never all load together and
+    // are never required by end users).
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei_version}"
+
+    if (project.hasProperty('withJei')) {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
+    if (project.hasProperty('withEmi')) {
+        localRuntime "dev.emi:emi-neoforge:${emi_version}"
+    }
+    if (project.hasProperty('withRei')) {
+        localRuntime "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+        localRuntime "me.shedaniel.cloth:cloth-config-neoforge:15.0.130"
+        localRuntime "dev.architectury:architectury-neoforge:13.0.10"
+    }
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

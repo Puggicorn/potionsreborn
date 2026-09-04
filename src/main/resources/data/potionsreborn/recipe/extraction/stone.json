@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:stone"
+  },
+  "effects": [
+      {"id": "minecraft:infested", "duration": 3600, "amplifier": 0},
+      {"id": "minecraft:haste", "duration": 3600, "amplifier": 0},
+      {"id": "minecraft:blindness", "duration": 200, "amplifier": 0}
+  ]
+}

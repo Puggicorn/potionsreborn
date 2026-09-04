@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:phantom_membrane"
+  },
+  "effects": [
+      {"id": "minecraft:slow_falling", "duration": 3600, "amplifier": 0},
+      {"id": "minecraft:levitation", "duration": 60, "amplifier": 0},
+      {"id": "minecraft:nausea", "duration": 400, "amplifier": 0}
+  ]
+}

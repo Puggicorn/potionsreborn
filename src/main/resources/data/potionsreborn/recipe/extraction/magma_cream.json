@@ -1,0 +1,11 @@
+﻿{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:magma_cream"
+  },
+  "effects": [
+      {"id": "minecraft:fire_resistance", "duration": 3600, "amplifier": 0},
+      {"id": "minecraft:slowness", "duration": 900, "amplifier": 0},
+      {"id": "minecraft:nausea", "duration": 400, "amplifier": 0}
+  ]
+}
