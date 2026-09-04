@@ -79,9 +79,9 @@ public class RageWanderGoal extends Goal {
 
         BlockPos base = this.mob.blockPosition();
         BlockPos target = base.offset(
-            (int)(this.directionX * LEG_DISTANCE),
+            (int)(this.directionX * LEG_DISTANCE + increasePerFailure),
             0,
-            (int)(this.directionZ * LEG_DISTANCE));
+            (int)(this.directionZ * LEG_DISTANCE + increasePerFailure));
 
         // Try to path to the target; if unreachable, nudge around the search height a few times.
         Path path = this.mob.getNavigation().createPath(target, 0);
