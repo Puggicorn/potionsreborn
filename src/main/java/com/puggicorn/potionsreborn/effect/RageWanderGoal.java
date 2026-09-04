@@ -24,7 +24,6 @@ public class RageWanderGoal extends Goal {
     private double directionX;
     private double directionZ;
     private int legTicks;
-    private int increasePerFailure = 5;
 
     public RageWanderGoal(PathfinderMob mob, double speedModifier) {
         this.mob = mob;
@@ -61,7 +60,6 @@ public class RageWanderGoal extends Goal {
         // Turn to a new direction when the current leg ran out of time or the path is blocked/done.
         if (this.legTicks <= 0 || this.mob.getNavigation().isDone()) {
             this.pickNewDirection();
-            this.increasePerFailure += 5;
         }
     }
 
@@ -98,8 +96,7 @@ public class RageWanderGoal extends Goal {
             this.mob.getNavigation().moveTo(path, this.speedModifier);
         } else {
             // No path found this way; give up on this leg early so a new direction is tried soon.
-            this.legTicks = Math.min(this.legTicks, 10 + this.increasePerFailure);
-            this.increasePerFailure += 5;
+            this.legTicks = Math.min(this.legTicks, 10);
         }
 
         // Face the direction of travel.
