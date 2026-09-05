@@ -1,0 +1,22 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by Puggicorn",
+	"textures": {
+		"1": "potionsreborn:block/centrifuge",
+		"particle": "potionsreborn:block/centrifuge_base"
+	},
+	"elements": [
+		{
+			"name": "Bottle 0",
+			"from": [9, 2, 8],
+			"to": [16, 14, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9, 2, 8]},
+			"faces": {
+				"north": {"uv": [0, 2, 7, 14], "texture": "#1"},
+				"south": {"uv": [7, 2, 0, 14], "texture": "#1"},
+				"up": {"uv": [0, 0, 0, 0], "rotation": 270, "texture": "#1"},
+				"down": {"uv": [0, 0, 0, 0], "rotation": 90, "texture": "#1", "cullface": "down"}
+			}
+		}
+	]
+}

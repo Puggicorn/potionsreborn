@@ -1,7 +1,62 @@
 {
-  "variants": {
-    "": {
-      "model": "potionsreborn:block/centrifuge"
+  "multipart": [
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_stand"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_bottle0"
+      },
+      "when": {
+        "has_bottle_0": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_bottle1"
+      },
+      "when": {
+        "has_bottle_1": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_bottle2"
+      },
+      "when": {
+        "has_bottle_2": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_empty0"
+      },
+      "when": {
+        "has_bottle_0": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_empty1"
+      },
+      "when": {
+        "has_bottle_1": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "potionsreborn:block/centrifuge_empty2"
+      },
+      "when": {
+        "has_bottle_2": "false"
+      }
     }
-  }
+  ]
 }

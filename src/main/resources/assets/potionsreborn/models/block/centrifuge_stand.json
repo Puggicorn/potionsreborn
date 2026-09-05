@@ -1,0 +1,75 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by Puggicorn",
+	"textures": {
+		"1": "potionsreborn:block/centrifuge_base",
+		"particle": "potionsreborn:block/centrifuge_base"
+	},
+	"elements": [
+		{
+			"name": "Breeze Rod",
+			"from": [7, 0, 7],
+			"to": [9, 16, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [7, 0, 9, 16], "texture": "#1"},
+				"east": {"uv": [7, 0, 9, 16], "texture": "#1"},
+				"south": {"uv": [7, 0, 9, 16], "texture": "#1"},
+				"west": {"uv": [7, 0, 9, 16], "texture": "#1"},
+				"up": {"uv": [7, 0, 9, 2], "texture": "#1"},
+				"down": {"uv": [7, 14, 9, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "Holder 0",
+			"from": [9, 0, 5],
+			"to": [15, 2, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9, 0, 5]},
+			"faces": {
+				"north": {"uv": [6, 14, 12, 16], "texture": "#1"},
+				"east": {"uv": [6, 14, 12, 16], "texture": "#1"},
+				"south": {"uv": [6, 14, 12, 16], "texture": "#1"},
+				"west": {"uv": [6, 14, 12, 16], "texture": "#1"},
+				"up": {"uv": [6, 8, 12, 14], "texture": "#1"},
+				"down": {"uv": [6, 8, 12, 14], "texture": "#1"}
+			}
+		},
+		{
+			"name": "Holder 1",
+			"from": [1, 0, 1],
+			"to": [7, 2, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 1]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 2], "rotation": 180, "texture": "#1"},
+				"east": {"uv": [0, 0, 6, 2], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [0, 0, 6, 2], "rotation": 180, "texture": "#1"},
+				"west": {"uv": [0, 0, 6, 2], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [0, 2, 6, 8], "rotation": 180, "texture": "#1"},
+				"down": {"uv": [0, 2, 6, 8], "rotation": 180, "texture": "#1"}
+			}
+		},
+		{
+			"name": "Holder 2",
+			"from": [1, 0, 9],
+			"to": [7, 2, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 9]},
+			"faces": {
+				"north": {"uv": [0, 14, 6, 16], "texture": "#1"},
+				"east": {"uv": [0, 14, 6, 16], "texture": "#1"},
+				"south": {"uv": [0, 14, 6, 16], "texture": "#1"},
+				"west": {"uv": [0, 14, 6, 16], "texture": "#1"},
+				"up": {"uv": [0, 8, 6, 14], "texture": "#1"},
+				"down": {"uv": [0, 8, 6, 14], "texture": "#1"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "Stand",
+			"origin": [1, 0, 9],
+			"scope": 0,
+			"color": 0,
+			"children": [0, 1, 2, 3]
+		}
+	]
+}
