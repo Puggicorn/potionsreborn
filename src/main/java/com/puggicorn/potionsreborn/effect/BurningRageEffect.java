@@ -62,13 +62,6 @@ public class BurningRageEffect extends MobEffect {
         if (burning && (!entity.isOnFire() || entity.getRemainingFireTicks() < 20)) {
             entity.igniteForTicks(40);
         }
-        if (entity instanceof Wolf wolf) {
-            // Custom behavior for wolves can be added here if needed.
-        }
-
-        if (entity instanceof Bee bee) {
-            // Custom behavior for bees can be added here if needed.
-        }
         return true;
     }
 
