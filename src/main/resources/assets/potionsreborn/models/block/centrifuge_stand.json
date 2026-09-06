@@ -1,6 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made by Puggicorn",
+	"render_type": "cutout",
 	"textures": {
 		"1": "potionsreborn:block/centrifuge_base",
 		"particle": "potionsreborn:block/centrifuge_base"

@@ -1,6 +1,7 @@
 package com.puggicorn.potionsreborn.block.entity;
 
 import com.puggicorn.potionsreborn.Config;
+import com.puggicorn.potionsreborn.block.CentrifugeBlock;
 import com.puggicorn.potionsreborn.item.ModItems;
 import com.puggicorn.potionsreborn.menu.CentrifugeMenu;
 import com.puggicorn.potionsreborn.potion.ModPotions;
@@ -18,6 +19,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -58,6 +62,9 @@ public class CentrifugeBlockEntity extends BaseContainerBlockEntity implements W
     int processTime;
     int fuel;
     boolean running;
+    private float rotorAngle;
+    private float previousRotorAngle;
+    private float rotorSpeed;
     protected final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
@@ -115,10 +122,39 @@ public class CentrifugeBlockEntity extends BaseContainerBlockEntity implements W
             this.processTime = 0;
         }
         this.setChanged();
+        if (this.level != null && !this.level.isClientSide) {
+            this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+        }
     }
 
     public boolean isRunning() {
         return this.running;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
+    }
+
+    /** Client-side visual ticker: gently accelerates the rotor while active and coasts to rest. */
+    public static void clientTick(Level level, BlockPos pos, BlockState state, CentrifugeBlockEntity centrifuge) {
+        centrifuge.previousRotorAngle = centrifuge.rotorAngle;
+        float targetSpeed = centrifuge.running ? 18.0F : 0.0F;
+        centrifuge.rotorSpeed += (targetSpeed - centrifuge.rotorSpeed) * (centrifuge.running ? 0.08F : 0.12F);
+        if (!centrifuge.running && centrifuge.rotorSpeed < 0.02F) {
+            centrifuge.rotorSpeed = 0.0F;
+        }
+        centrifuge.rotorAngle = (centrifuge.rotorAngle + centrifuge.rotorSpeed) % 360.0F;
+    }
+
+    /** Interpolated rotor angle for the block entity renderer. */
+    public float getRotorAngle(float partialTick) {
+        return this.previousRotorAngle + (this.rotorAngle - this.previousRotorAngle) * partialTick;
     }
 
     /** Current remaining fuel, for the menu's start-button check. */
@@ -127,11 +163,13 @@ public class CentrifugeBlockEntity extends BaseContainerBlockEntity implements W
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CentrifugeBlockEntity centrifuge) {
+        boolean visualStateChanged = false;
         ItemStack fuelStack = centrifuge.items.get(FUEL_SLOT);
         if (centrifuge.fuel <= 0 && fuelStack.is(ModItems.BREEZE_POWDER.get())) {
             centrifuge.fuel = Config.CENTRIFUGE_FUEL_USES.getAsInt();
             fuelStack.shrink(1);
             setChanged(level, pos, state);
+            visualStateChanged = true;
         }
 
         if (centrifuge.running && centrifuge.fuel > 0 && centrifuge.canProcess()) {
@@ -141,11 +179,33 @@ public class CentrifugeBlockEntity extends BaseContainerBlockEntity implements W
                 centrifuge.fuel--;
                 centrifuge.separate(level, pos);
                 centrifuge.running = false; // stop automatically once extraction finishes
+                visualStateChanged = true;
             }
             setChanged(level, pos, state);
         } else if (centrifuge.processTime > 0) {
             centrifuge.processTime = 0;
             setChanged(level, pos, state);
+            visualStateChanged = true;
+        }
+
+        centrifuge.updateBottleStates(level, pos, state);
+        if (visualStateChanged) {
+            level.sendBlockUpdated(pos, state, state, 3);
+        }
+    }
+
+    /** Keeps the multipart block model in sync with occupied output bottle slots. */
+    private void updateBottleStates(Level level, BlockPos pos, BlockState state) {
+        if (!(state.getBlock() instanceof CentrifugeBlock)) {
+            return;
+        }
+
+        BlockState updatedState = state;
+        for (int i = BOTTLE_SLOT_START; i <= BOTTLE_SLOT_END; i++) {
+            updatedState = updatedState.setValue(CentrifugeBlock.HAS_BOTTLE[i], !this.items.get(i).isEmpty());
+        }
+        if (updatedState != state) {
+            level.setBlock(pos, updatedState, 2);
         }
     }
 
