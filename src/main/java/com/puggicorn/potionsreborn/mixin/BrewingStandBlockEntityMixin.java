@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -36,6 +37,39 @@ public abstract class BrewingStandBlockEntityMixin {
     }
 
     /**
+     * The vanilla helper is static and receives no level, so it cannot look up the datapack recipe
+     * for an unknown ingredient. This redirect retains all vanilla/modded mixes, then adds the
+     * extraction-recipe case using the owning brewing stand's level.
+     */
+    @Redirect(
+        method = "serverTick",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;isBrewable(Lnet/minecraft/world/item/alchemy/PotionBrewing;Lnet/minecraft/core/NonNullList;)Z"
+        )
+    )
+    private static boolean potionsreborn$checkBrewable(PotionBrewing brewing, NonNullList<ItemStack> items,
+            Level level, BlockPos pos, net.minecraft.world.level.block.state.BlockState state, BrewingStandBlockEntity brewingStand) {
+        if (BrewingStandBlockEntityMixinInvoker.isBrewable(brewing, items)) {
+            return true;
+        }
+
+        if (ExtractionLookup.find(level, items.get(3)) != null) {
+            for (int i = 0; i < 3; i++) {
+                if (RebornBrewingLogic.canExtractOnto(items.get(i), brewing)) {
+                    return true;
+                }
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (RebornBrewingLogic.canModifyExtracted(items.get(i), items.get(3))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Replaces the vanilla mix with effect extraction for ingredients that have an extraction recipe.
      * Vanilla ingredient consumption (including crafting remainders) is replicated so automation
      * keeps working.
@@ -44,28 +78,27 @@ public abstract class BrewingStandBlockEntityMixin {
     private static void potionsreborn$doBrew(Level level, BlockPos pos, NonNullList<ItemStack> items, CallbackInfo ci) {
         ItemStack ingredient = items.get(3);
         EffectExtractionRecipe recipe = ExtractionLookup.find(level, ingredient);
-        if (recipe == null) {
-            return;
-        }
-
-        // Only take over when extraction actually applies to at least one bottle; otherwise defer
-        // to the vanilla/modded brew for this ingredient (e.g. a normal Spider Eye mix).
         PotionBrewing brewing = level.potionBrewing();
-        boolean anyExtractable = false;
+        boolean anyCustomOperation = false;
         for (int i = 0; i < 3; i++) {
-            if (RebornBrewingLogic.canExtractOnto(items.get(i), brewing)) {
-                anyExtractable = true;
+            ItemStack potion = items.get(i);
+            if (recipe != null && RebornBrewingLogic.canExtractOnto(potion, brewing)
+                || RebornBrewingLogic.canModifyExtracted(potion, ingredient)) {
+                anyCustomOperation = true;
                 break;
             }
         }
-        if (!anyExtractable) {
+        // No applicable extraction/modifier operation: let vanilla or another mod's recipe run.
+        if (!anyCustomOperation) {
             return;
         }
 
         for (int i = 0; i < 3; i++) {
             ItemStack stack = items.get(i);
-            if (RebornBrewingLogic.canExtractOnto(stack, brewing)) {
+            if (recipe != null && RebornBrewingLogic.canExtractOnto(stack, brewing)) {
                 items.set(i, RebornBrewingLogic.brewOnto(stack, recipe));
+            } else if (RebornBrewingLogic.canModifyExtracted(stack, ingredient)) {
+                items.set(i, RebornBrewingLogic.modifyExtracted(stack, ingredient));
             }
         }
 

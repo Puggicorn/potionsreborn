@@ -8,6 +8,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.Wolf;
 
 /**
  * Sets the user ablaze in exchange for speed and greatly increased attack damage (3×).
@@ -59,6 +61,13 @@ public class BurningRageEffect extends MobEffect {
         // Keep the entity burning for as long as the rage lasts.
         if (burning && (!entity.isOnFire() || entity.getRemainingFireTicks() < 20)) {
             entity.igniteForTicks(40);
+        }
+        if (entity instanceof Wolf wolf) {
+            // Custom behavior for wolves can be added here if needed.
+        }
+
+        if (entity instanceof Bee bee) {
+            // Custom behavior for bees can be added here if needed.
         }
         return true;
     }
