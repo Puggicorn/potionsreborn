@@ -11,6 +11,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -83,7 +84,7 @@ public final class RageEvents {
         RageWanderGoal wander = new RageWanderGoal(mob, 1.1D);
         NearestAttackableTargetGoal<LivingEntity> nearest = new NearestAttackableTargetGoal<>(
             mob, LivingEntity.class, 1, true, false,
-            target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target));
+            target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target) && !target.isInvisible() && !(target instanceof ArmorStand));
         HurtByTargetGoal retaliate = new HurtByTargetGoal(mob);
 
         java.util.List<Goal> injected = new java.util.ArrayList<>();
