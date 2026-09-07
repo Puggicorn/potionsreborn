@@ -40,7 +40,20 @@ public final class RageEvents {
     private static final Map<Mob, java.util.Map<Goal, Integer>> SUSPENDED_IDLE = new WeakHashMap<>();
     /** Entities awaiting a deferred Stun application on their next tick (after a bulk effect clear). */
     private static final java.util.Set<java.util.UUID> PENDING_STUN = new java.util.HashSet<>();
-    private static final Class<?> DUMMY_CLASS = null;
+    private static final Class<?> DUMMY_CLASS;
+
+    static {
+        Class<?> dummyClass;
+        try {
+            dummyClass = Class.forName("net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity");
+        } catch (ClassNotFoundException e) {
+            dummyClass = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            dummyClass = null;
+        }
+        DUMMY_CLASS = dummyClass;
+    }
 
     private RageEvents() {
     }
@@ -82,17 +95,6 @@ public final class RageEvents {
         if (mob.level().isClientSide || INJECTED.containsKey(mob)) {
             return;
         }
-        // Find "net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity" class via reflection to prevent mobs from always targeting non-living modded mob.
-        if (DUMMY_CLASS == null) {
-            try {
-                DUMMY_CLASS = Class.forName("net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity");
-            } catch (ClassNotFoundException e) {
-                // Ignore
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
 
 
         RageAttackGoal attack = new RageAttackGoal(mob, 1.2D, false);
