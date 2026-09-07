@@ -2,6 +2,9 @@ package com.puggicorn.potionsreborn.effect;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import com.google.gson.internal.reflect.ReflectionHelper;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -37,6 +40,7 @@ public final class RageEvents {
     private static final Map<Mob, java.util.Map<Goal, Integer>> SUSPENDED_IDLE = new WeakHashMap<>();
     /** Entities awaiting a deferred Stun application on their next tick (after a bulk effect clear). */
     private static final java.util.Set<java.util.UUID> PENDING_STUN = new java.util.HashSet<>();
+    private static final Class<?> DUMMY_CLASS = null;
 
     private RageEvents() {
     }
@@ -78,13 +82,27 @@ public final class RageEvents {
         if (mob.level().isClientSide || INJECTED.containsKey(mob)) {
             return;
         }
+        // Find "net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity" class via reflection to prevent mobs from always targeting non-living modded mob.
+        if (DUMMY_CLASS == null) {
+            try {
+                DUMMY_CLASS = Class.forName("net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity");
+            } catch (ClassNotFoundException e) {
+                // Ignore
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
         RageAttackGoal attack = new RageAttackGoal(mob, 1.2D, false);
         HuntAttackerGoal hunt = new HuntAttackerGoal(mob);
         RageWanderGoal wander = new RageWanderGoal(mob, 1.1D);
         NearestAttackableTargetGoal<LivingEntity> nearest = new NearestAttackableTargetGoal<>(
             mob, LivingEntity.class, 1, true, false,
-            target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target) && !target.isInvisible() && !(target instanceof ArmorStand));
+            target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target) && !target.isInvisible() && !(target instanceof ArmorStand)
+        && ((DUMMY_CLASS != null && !DUMMY_CLASS.isInstance(target)) || (DUMMY_CLASS != null && mob.getRandom().nextBoolean()))
+        );
         HurtByTargetGoal retaliate = new HurtByTargetGoal(mob);
 
         java.util.List<Goal> injected = new java.util.ArrayList<>();
