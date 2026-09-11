@@ -3,10 +3,8 @@ package com.puggicorn.potionsreborn.effect;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.google.gson.internal.reflect.ReflectionHelper;
-
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -17,6 +15,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -40,19 +39,49 @@ public final class RageEvents {
     private static final Map<Mob, java.util.Map<Goal, Integer>> SUSPENDED_IDLE = new WeakHashMap<>();
     /** Entities awaiting a deferred Stun application on their next tick (after a bulk effect clear). */
     private static final java.util.Set<java.util.UUID> PENDING_STUN = new java.util.HashSet<>();
-    private static final Class<?> DUMMY_CLASS;
+    private static final String DUMMY_MOD_ID = "dummmmmmy";
+    private static final String DUMMY_CLASS_NAME = "net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity";
+    private static Class<?> dummyClass;
+    private static boolean dummyLookupDone;
 
-    static {
-        Class<?> dummyClass;
-        try {
-            dummyClass = Class.forName("net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity");
-        } catch (ClassNotFoundException e) {
-            dummyClass = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            dummyClass = null;
+    /**
+     * True if the target is a training dummy from the Dummmmmmy mod.
+     * Resolved lazily (first rage injection, long after all mods are loaded) so there is no
+     * too-early {@code Class.forName} issue, and the entity-type registry check means it works
+     * even if the dummy class is renamed/refactored.
+     */
+    public static boolean isDummy(LivingEntity target) {
+        if (target == null) {
+            return false;
         }
-        DUMMY_CLASS = dummyClass;
+        try {
+            var key = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+            if (key != null && DUMMY_MOD_ID.equals(key.getNamespace())) {
+                return true;
+            }
+        } catch (Exception ignored) {
+            // Fall through to class checks.
+        }
+        // Name check needs no class loading, so it can never be "too early".
+        if (target.getClass().getName().contains("TargetDummy")) {
+            return true;
+        }
+        Class<?> clazz = getDummyClass();
+        return clazz != null && clazz.isInstance(target);
+    }
+
+    private static synchronized Class<?> getDummyClass() {
+        if (!dummyLookupDone) {
+            dummyLookupDone = true;
+            if (ModList.get().isLoaded(DUMMY_MOD_ID)) {
+                try {
+                    dummyClass = Class.forName(DUMMY_CLASS_NAME);
+                } catch (Exception e) {
+                    dummyClass = null;
+                }
+            }
+        }
+        return dummyClass;
     }
 
     private RageEvents() {
@@ -103,7 +132,7 @@ public final class RageEvents {
         NearestAttackableTargetGoal<LivingEntity> nearest = new NearestAttackableTargetGoal<>(
             mob, LivingEntity.class, 1, true, false,
             target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target) && !target.isInvisible() && !(target instanceof ArmorStand)
-        && ((DUMMY_CLASS != null && !DUMMY_CLASS.isInstance(target)) || (DUMMY_CLASS != null && mob.getRandom().nextBoolean()))
+                && !isDummy(target)
         );
         HurtByTargetGoal retaliate = new HurtByTargetGoal(mob);
 
