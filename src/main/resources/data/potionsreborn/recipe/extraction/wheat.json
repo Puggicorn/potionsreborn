@@ -1,0 +1,9 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:wheat"
+  },
+  "effects": [
+    {"id": "minecraft:saturation", "duration": 1, "amplifier": 0}
+  ]
+}

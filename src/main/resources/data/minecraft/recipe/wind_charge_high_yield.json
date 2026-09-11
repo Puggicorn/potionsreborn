@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder"
+    },
+    {
+      "item": "potionsreborn:breeze_powder"
+    },
+    [
+      {
+        "item": "minecraft:feather"
+      }
+    ]
+  ],
+  "result": {
+    "count": 8,
+    "id": "minecraft:wind_charge"
+  }
+}

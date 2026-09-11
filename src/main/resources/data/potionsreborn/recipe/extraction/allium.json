@@ -1,0 +1,9 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:allium"
+  },
+  "effects": [
+    {"id": "minecraft:fire_resistance", "duration": 200, "amplifier": 0}
+  ]
+}

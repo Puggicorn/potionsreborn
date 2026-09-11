@@ -1,0 +1,10 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:glow_berries"
+  },
+  "effects": [
+    {"id": "minecraft:glowing", "duration": 1200, "amplifier": 0},
+    {"id": "minecraft:night_vision", "duration": 1200, "amplifier": 0}
+  ]
+}

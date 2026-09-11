@@ -1,0 +1,10 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:golden_apple"
+  },
+  "effects": [
+    {"id": "minecraft:regeneration", "duration": 60, "amplifier": 0},
+    {"id": "minecraft:absorption", "duration": 1200, "amplifier": 0}
+  ]
+}

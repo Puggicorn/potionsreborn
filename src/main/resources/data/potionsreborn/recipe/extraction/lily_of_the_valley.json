@@ -1,0 +1,9 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:lily_of_the_valley"
+  },
+  "effects": [
+    {"id": "minecraft:poison", "duration": 200, "amplifier": 0}
+  ]
+}

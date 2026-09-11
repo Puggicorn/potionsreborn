@@ -1,0 +1,9 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:azure_bluet"
+  },
+  "effects": [
+    {"id": "minecraft:blindness", "duration": 200, "amplifier": 0}
+  ]
+}
