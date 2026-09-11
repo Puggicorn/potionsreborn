@@ -1,0 +1,11 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:glow_inc_sac"
+  },
+  "effects": [
+    {"id": "minecraft:glowing", "duration": 1200, "amplifier": 0},
+    {"id": "minecraft:water_breathing", "duration": 1200, "amplifier": 0},
+    {"id": "minecraft:blindness", "duration": 1200, "amplifier": 0}
+  ]
+}

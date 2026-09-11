@@ -1,0 +1,9 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:feather"
+  },
+  "effects": [
+    {"id": "minecraft:slow_fall", "duration": 1200, "amplifier": 0}
+  ]
+}

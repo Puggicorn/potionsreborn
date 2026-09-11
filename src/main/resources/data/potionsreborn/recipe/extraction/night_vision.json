@@ -1,0 +1,9 @@
+{
+  "type": "potionsreborn:effect_extraction",
+  "ingredient": {
+    "item": "minecraft:poppy"
+  },
+  "effects": [
+    {"id": "minecraft:night_vision", "duration": 200, "amplifier": 0}
+  ]
+}
