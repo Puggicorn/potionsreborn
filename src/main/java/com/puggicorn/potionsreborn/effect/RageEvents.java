@@ -2,6 +2,9 @@ package com.puggicorn.potionsreborn.effect;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import com.google.gson.internal.reflect.ReflectionHelper;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -11,6 +14,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -36,6 +40,20 @@ public final class RageEvents {
     private static final Map<Mob, java.util.Map<Goal, Integer>> SUSPENDED_IDLE = new WeakHashMap<>();
     /** Entities awaiting a deferred Stun application on their next tick (after a bulk effect clear). */
     private static final java.util.Set<java.util.UUID> PENDING_STUN = new java.util.HashSet<>();
+    private static final Class<?> DUMMY_CLASS;
+
+    static {
+        Class<?> dummyClass;
+        try {
+            dummyClass = Class.forName("net.mehvahdjukaar.dummmmmmy.common.TargetDummyEntity");
+        } catch (ClassNotFoundException e) {
+            dummyClass = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            dummyClass = null;
+        }
+        DUMMY_CLASS = dummyClass;
+    }
 
     private RageEvents() {
     }
@@ -78,12 +96,15 @@ public final class RageEvents {
             return;
         }
 
+
         RageAttackGoal attack = new RageAttackGoal(mob, 1.2D, false);
         HuntAttackerGoal hunt = new HuntAttackerGoal(mob);
         RageWanderGoal wander = new RageWanderGoal(mob, 1.1D);
         NearestAttackableTargetGoal<LivingEntity> nearest = new NearestAttackableTargetGoal<>(
             mob, LivingEntity.class, 1, true, false,
-            target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target));
+            target -> target != mob && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target) && !target.isInvisible() && !(target instanceof ArmorStand)
+        && ((DUMMY_CLASS != null && !DUMMY_CLASS.isInstance(target)) || (DUMMY_CLASS != null && mob.getRandom().nextBoolean()))
+        );
         HurtByTargetGoal retaliate = new HurtByTargetGoal(mob);
 
         java.util.List<Goal> injected = new java.util.ArrayList<>();
