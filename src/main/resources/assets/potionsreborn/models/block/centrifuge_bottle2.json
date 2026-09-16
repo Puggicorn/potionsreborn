@@ -1,7 +1,7 @@
 {
 	"format_version": "1.9.0",
+	"render_type": "minecraft:translucent",
 	"credit": "Made by Puggicorn",
-	"render_type": "cutout",
 	"textures": {
 		"1": "potionsreborn:block/centrifuge",
 		"particle": "potionsreborn:block/centrifuge_base"
@@ -14,10 +14,9 @@
 			"rotation": {"angle": 45, "axis": "y", "origin": [7, 2, 9]},
 			"faces": {
 				"north": {"uv": [7, 2, 0, 14], "texture": "#1"},
-				"south": {"uv": [0, 2, 7, 14], "texture": "#1"},
-				"up": {"uv": [0, 0, 0, 0], "rotation": 90, "texture": "#1"},
-				"down": {"uv": [0, 0, 0, 0], "rotation": 270, "texture": "#1", "cullface": "down"}
+				"south": {"uv": [0, 2, 7, 14], "texture": "#1"}
 			}
 		}
-	]
+	],
+	"display": {}
 }
